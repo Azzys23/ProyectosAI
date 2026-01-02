@@ -1,56 +1,55 @@
-
 # SUCKADOR. 🎬🎮
 
-**Suckador** es una plataforma de curación de contenido impulsada por IA, diseñada para crear listas de películas y videojuegos recomendados por la comunidad.
+**Suckador (The name was a recomendated by a friend) ** is an AI-powered content curation platform designed to create community-driven recommendation lists for movies and video games.
 
-## 🚀 Tecnologías
+## 🚀 Technologies
 - **Frontend**: React (ESM) + Tailwind CSS.
-- **IA**: Google Gemini API (`gemini-3-flash-preview`) para autocompletado de reseñas.
-- **Backend/DB**: Supabase (PostgreSQL) para persistencia en tiempo real.
+- **AI**: Google Gemini API (`gemini-3-flash-preview`) for automated review generation.
+- **Backend/DB**: Supabase (PostgreSQL) for real-time data persistence.
 - **Routing**: React Router DOM.
 
-## 🛠️ Configuración de Base de Datos (Supabase)
+## 🛠️ Database Setup (Supabase)
 
-1. Crea un nuevo proyecto en [Supabase](https://supabase.com).
-2. En el **SQL Editor**, ejecuta el siguiente comando para crear la tabla necesaria:
+1. Create a new project at [Supabase](https://supabase.com).
+2. In the **SQL Editor**, run the following command to create the required table:
 
 ```sql
--- Crear tabla de recomendaciones
+-- Create recommendations table
 create table recommendations (
   id uuid default gen_random_uuid() primary key,
   created_at timestamptz default now(),
   username text not null,
   user_id text not null,
   title text not null,
-  type text not null, -- 'MOVIE' o 'GAME'
+  type text not null, -- 'MOVIE' or 'GAME'
   description text not null,
   rating numeric default 10
 );
 
--- Habilitar Políticas de Seguridad (RLS)
+-- Enable Row Level Security (RLS)
 alter table recommendations enable row level security;
 
--- Política: Cualquiera puede leer
-create policy "Lectura pública" on recommendations for select using (true);
+-- Policy: Anyone can read
+create policy "Public Read" on recommendations for select using (true);
 
--- Política: Cualquiera puede insertar (Modo Demo)
-create policy "Inserción pública" on recommendations for insert with check (true);
+-- Policy: Anyone can insert (Demo Mode)
+create policy "Public Insert" on recommendations for insert with check (true);
 ```
 
-## 🔑 Variables de Entorno
+## 🔑 Environment Variables
 
-Para que la app funcione al 100%, necesitas configurar estas variables en tu servicio de Hosting (Vercel/Netlify):
+To get the app fully functional, you need to configure these variables in your Hosting service (Vercel/Netlify):
 
-- `API_KEY`: Tu clave de Google AI Studio (Gemini).
-- `SUPABASE_URL`: La URL de tu proyecto Supabase.
-- `SUPABASE_ANON_KEY`: La clave anónima de tu proyecto Supabase.
+- `API_KEY`: Your Google AI Studio (Gemini) key.
+- `SUPABASE_URL`: Your Supabase project URL.
+- `SUPABASE_ANON_KEY`: Your Supabase anonymous key.
 
-## 📦 Despliegue
+## 📦 Deployment
 
-1. Sube este código a un repositorio de **GitHub**.
-2. Conecta el repositorio a **Vercel**.
-3. Configura las variables de entorno mencionadas arriba.
-4. ¡Listo! La app se compilará y estará viva en una URL pública.
+1. Push this code to a **GitHub** repository.
+2. Connect the repository to **Vercel**.
+3. Configure the environment variables mentioned above.
+4. Done! The app will be built and live at a public URL.
 
 ---
-*Desarrollado con ❤️ y IA para la comunidad de entretenimiento.*
+*Developed with ❤️ and AI for the entertainment community.*
