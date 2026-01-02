@@ -1,18 +1,10 @@
-
 import { createClient } from '@supabase/supabase-js';
 import { Recommendation, MediaType } from '../types';
 
-/**
- * CONFIGURACIÓN DE SUPABASE
- * -------------------------
- * ¡IMPORTANTE!: Reemplaza estos valores con los de tu proyecto en 
- * Settings > API de tu panel de Supabase.
- */
-const supabaseUrl = process.env.SUPABASE_URL || 'https://reucnxtjaraylxsyzhab.supabase.co'; 
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJldWNueHRqYXJheWx4c3l6aGFiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjczNzkwMTEsImV4cCI6MjA4Mjk1NTAxMX0.yhziAlOK6MnP4IS3K6Nabgpv-eebmL2IUIYfCeQJt90';
+const supabaseUrl = process.env.SUPABASE_URL; 
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-// Solo inicializamos si tenemos las credenciales
-export const supabase = (supabaseUrl && supabaseUrl.startsWith('https://')) 
+export const supabase = (supabaseUrl && supabaseAnonKey) 
   ? createClient(supabaseUrl, supabaseAnonKey) 
   : null;
 
@@ -47,7 +39,6 @@ const getLocalRecs = (): Recommendation[] => {
 
 export const getRecommendations = async (filter: string = 'ALL') => {
   if (!supabase) {
-    console.warn("Supabase no configurado. Usando modo local.");
     const local = getLocalRecs();
     return filter === 'ALL' ? local : local.filter(r => r.type === filter);
   }
@@ -63,16 +54,9 @@ export const getRecommendations = async (filter: string = 'ALL') => {
     }
 
     const { data, error } = await query;
-    
-    if (error) {
-      // Aquí es donde corregimos el [object Object]
-      console.error("Error de Supabase:", error.message, "| Sugerencia:", error.hint);
-      return getLocalRecs();
-    }
-    
+    if (error) return getLocalRecs();
     return (data as Recommendation[]) || [];
   } catch (err) {
-    console.error("Error crítico de conexión:", err);
     return getLocalRecs();
   }
 };
@@ -94,10 +78,7 @@ export const addRecommendation = async (rec: Omit<Recommendation, 'id' | 'create
     .insert([rec])
     .select();
   
-  if (error) {
-    console.error("Error al insertar:", error.message);
-    throw error;
-  }
+  if (error) throw error;
   return data[0];
 };
 
