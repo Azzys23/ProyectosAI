@@ -3,7 +3,7 @@ import { MediaType, AIResponse } from "../types";
 
 export const generateRecommendationDetails = async (title: string, type: MediaType): Promise<AIResponse> => {
   // Inicialización usando la API_KEY definida en el proceso
-  const apiKey = process.env.API_KEY || 'AIzaSyDjKpmj472ImcvuKDfeKM5kt5e0odoMeJA';
+  const apiKey = process.env.API_KEY || '';
   const ai = new GoogleGenAI({ apiKey });
   const modelName = 'gemini-3-flash-preview';
   
