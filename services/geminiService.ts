@@ -1,20 +1,18 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { MediaType, AIResponse } from "../types";
 
-// Always use the process.env.API_KEY directly as per guidelines.
+// Inicialización siguiendo las guías: objeto con nombre de parámetro apiKey
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const generateRecommendationDetails = async (title: string, type: MediaType): Promise<AIResponse> => {
-  const model = 'gemini-3-flash-preview';
+  const modelName = 'gemini-3-flash-preview';
   
   const prompt = `Actúa como un experto en entretenimiento. Proporciona detalles para una recomendación de un ${type === MediaType.MOVIE ? 'película' : 'videojuego'} llamado "${title}". 
   Necesito una descripción breve y atractiva (máximo 300 caracteres), una calificación sugerida del 1 al 10 y una lista de 3 títulos similares.`;
 
-  // Querying GenAI with model and prompt in a single call.
   const response = await ai.models.generateContent({
-    model,
-    contents: prompt,
+    model: modelName,
+    contents: [{ parts: [{ text: prompt }] }],
     config: {
       responseMimeType: "application/json",
       responseSchema: {
@@ -32,7 +30,7 @@ export const generateRecommendationDetails = async (title: string, type: MediaTy
     }
   });
 
-  // Extract text and trim before parsing as per guidelines.
-  const jsonStr = response.text.trim();
-  return JSON.parse(jsonStr) as AIResponse;
+  // El SDK usa .text como propiedad, no como función
+  const jsonStr = response.text || "{}";
+  return JSON.parse(jsonStr.trim()) as AIResponse;
 };
