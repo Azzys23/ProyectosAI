@@ -2,7 +2,7 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { MediaType, AIResponse } from "../types";
 
 export const generateRecommendationDetails = async (title: string, type: MediaType): Promise<AIResponse> => {
-  // Inicialización dentro de la función para asegurar que toma la API_KEY más reciente
+  // Inicialización siguiendo las guías oficiales
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || 'AIzaSyDjKpmj472ImcvuKDfeKM5kt5e0odoMeJA' });
   const modelName = 'gemini-3-flash-preview';
   
@@ -29,7 +29,7 @@ export const generateRecommendationDetails = async (title: string, type: MediaTy
     }
   });
 
-  // El SDK usa .text como propiedad (getter)
+  // El SDK usa .text como propiedad, no como función
   const jsonStr = response.text || "{}";
   return JSON.parse(jsonStr.trim()) as AIResponse;
 };

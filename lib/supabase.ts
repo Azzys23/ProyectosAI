@@ -13,35 +13,11 @@ const LOCAL_STORAGE_KEY = 'suckador_local_recs';
 
 const getLocalRecs = (): Recommendation[] => {
   const data = localStorage.getItem(LOCAL_STORAGE_KEY);
-  return data ? JSON.parse(data) : [
-    {
-      id: '1',
-      user_id: 'system',
-      title: 'Inception',
-      type: MediaType.MOVIE,
-      description: 'Una obra maestra de Nolan sobre los sueños dentro de los sueños.',
-      rating: 9.5,
-      created_at: new Date().toISOString(),
-      username: 'Cinephile99'
-    },
-    {
-      id: '2',
-      user_id: 'system',
-      title: 'Elden Ring',
-      type: MediaType.GAME,
-      description: 'Exploración pura y desafíos épicos en las Tierras Entre.',
-      rating: 10,
-      created_at: new Date().toISOString(),
-      username: 'GamerX'
-    }
-  ];
+  return data ? JSON.parse(data) : [];
 };
 
 export const getRecommendations = async (filter: string = 'ALL') => {
-  if (!supabase) {
-    const local = getLocalRecs();
-    return filter === 'ALL' ? local : local.filter(r => r.type === filter);
-  }
+  if (!supabase) return getLocalRecs();
 
   try {
     let query = supabase
